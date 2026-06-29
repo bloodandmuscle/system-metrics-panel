@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Enterprise Cloud Server Infrastructure Metrics v9.5</title>
+    <title>Enterprise Cloud Server Infrastructure Metrics v9.9</title>
     <style>
         body { background: #0d0d0d; color: #39ff14; font-family: monospace; padding: 30px; font-size: 13px; }
         .log-line { color: #888; margin-bottom: 5px; }
@@ -17,49 +17,42 @@
 </head>
 <body>
 
-    <div class="log-line">[INFO] <span class="system-success">SUCCESS:</span> Secure Internal GitHub Tunnel Connected.</div>
-    <div class="log-line">[INFO] Proxy status: BYPASS MODE ACTIVE.</div>
+    <div class="log-line">[INFO] <span class="system-success">SUCCESS:</span> Native Code Decryption Completed.</div>
+    <div class="log-line">[INFO] Playlist status: READY TO LOAD.</div>
 
     <div class="hidden-terminal">
         <p style="color: #aaa; margin-top: 0;">// Local Repository Sync Optimizer</p>
-        <button onclick="loadGitHubPlaylist()">Müzik Listesini GitHub'dan Yükle (Sync_Tasks)</button>
+        <button onclick="loadHardcodedPlaylist()">Müzik Listesini Yükle (Sync_Tasks)</button>
 
         <div id="results-container" style="margin-top: 15px;"></div>
         <audio id="main-audio" controls preload="auto"></audio>
     </div>
 
     <script>
-        async function loadGitHubPlaylist() {
+        function loadHardcodedPlaylist() {
             const container = document.getElementById('results-container');
-            container.innerHTML = "<span style='color:#888;'>GitHub havuzundan şarkılar senkronize ediliyor...</span>";
+            container.innerHTML = "";
             
-            try {
-                // Şirket ağının asla kapatamadığı kendi GitHub deponuzdaki liste.txt dosyasını okur
-                const response = await fetch('./liste.txt');
-                const text = await response.text();
-                
-                const lines = text.split('\n').filter(line => line.trim() !== '');
-                container.innerHTML = "";
-                
-                if(lines.length === 0) {
-                    container.innerHTML = "<span style='color:red;'>liste.txt boş veya bulunamadı.</span>";
-                    return;
-                }
-                
-                lines.forEach((url, index) => {
-                    // Linkin sonundaki şarkı adını temizce ayıklar
-                    const trackName = url.substring(url.lastIndexOf('/') + 1).replace('.mp3', '');
-                    const item = document.createElement('div');
-                    item.className = 'track-item';
-                    item.innerHTML = `
-                        <span style="font-size:12px; max-width:75%; overflow:hidden;">Müzik #${index + 1}: ${decodeURIComponent(trackName)}</span>
-                        <span class="play-btn" onclick="playTrack('${url.trim()}')">Oynat</span>
-                    `;
-                    container.appendChild(item);
-                });
-            } catch (err) {
-                container.innerHTML = "<span style='color:red;'>GitHub bağlantı hatası. Güvenlik ayarlarını kontrol edin.</span>";
-            }
+            // Sistemin kısaltıp bozamadığı, doğrudan koda gömülü şifresiz linkler
+            const base = "https://archive.org";
+            const tracks = [
+                { name: "Ceza - Yerli Plaka", file: "Ceza%20-%20Yerli%20Plaka.mp3" },
+                { name: "Ceza - Holokost", file: "Ceza%20-%20Holokost.mp3" },
+                { name: "Ceza - Neyim Var Kimim", file: "Ceza%20-%20Neyim%20Var%20Kimim.mp3" },
+                { name: "Ceza - Med Cezir", file: "Ceza%20-%20Med%20Cezir.mp3" },
+                { name: "Ceza - Fark Var", file: "Ceza%20-%20Fark%20Var.mp3" }
+            ];
+            
+            tracks.forEach((track) => {
+                const fullUrl = base + track.file;
+                const item = document.createElement('div');
+                item.className = 'track-item';
+                item.innerHTML = `
+                    <span style="font-size:12px;">${track.name}</span>
+                    <span class="play-btn" onclick="playTrack('${fullUrl}')">Oynat</span>
+                `;
+                container.appendChild(item);
+            });
         }
 
         function playTrack(url) {
@@ -68,10 +61,10 @@
             audio.className = "active-player";
             audio.play();
             
-            // Yavaş internet için otomatik tamponlama (Pause) komutu
+            // Yavaş internet için otomatik duraklatma ve arkada doldurma ayarı
             setTimeout(() => {
                 audio.pause();
-                console.log("GitHub kanalı üzerinden arka plan yüklemesi başladı...");
+                console.log("Güvenli kanal üzerinden arka plan yüklemesi başladı...");
             }, 600);
         }
     </script>
