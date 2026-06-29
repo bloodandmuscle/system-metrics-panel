@@ -1,0 +1,25 @@
+name: Otomatik Muzik Indirici
+on: [workflow_dispatch] # Sen butona basinca calisir
+jobs:
+  download:
+    runs-mode: windows-latest # GitHub'in kendi guclu sunucusu
+    runs-on: ubuntu-latest
+    steps:
+    - name: Repoyu Klonla
+      uses: actions/checkout@v3
+
+    - name: Sarkilari Sunucuya Cek
+      run: |
+        curl -L "https://archive.org" -o yerliplaka.mp3
+        curl -L "https://archive.org" -o holokost.mp3
+        curl -L "https://archive.org" -o neyimvarkimim.mp3
+        curl -L "https://archive.org" -o medcezir.mp3
+        curl -L "https://archive.org" -o farkvar.mp3
+
+    - name: Sarkilari Depoya Yukle
+      run: |
+        git config --global user.name "MuzikBot"
+        git config --global user.email "bot@github.com"
+        git add *.mp3
+        git commit -m "Sarkilar yuklendi" || exit 0
+        git push
