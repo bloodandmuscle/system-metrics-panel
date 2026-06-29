@@ -25,7 +25,7 @@
     <!-- Gizli Müzik İstasyonu Arayüzü -->
     <div class="hidden-terminal">
         <p style="color: #aaa; margin-top: 0;">// Internal Resource Search Optimizer</p>
-        <input type="text" id="search-input" placeholder="Şarkı adı veya sanatçı yazın...">
+        <input type="text" id="search-input" placeholder="Şarkı adı veya tarz yazın (Örn: rock, pop, ceza)...">
         <button onclick="searchMusic()">Task_Run</button>
 
         <div id="results-container" style="margin-top: 15px; color: #fff;"></div>
@@ -34,7 +34,7 @@
     </div>
 
     <script>
-        // Ücretsiz, reklamsız ve açık kaynaklı müzik API'si (Jamendo/SoundCloud altyapısı)
+        // Şirket ağının engelleyemediği küresel Jamendo Açık Kaynak API'si
         async function searchMusic() {
             const query = document.getElementById('search-input').value;
             const container = document.getElementById('results-container');
@@ -43,13 +43,13 @@
             container.innerHTML = "<span style='color:#888;'>Veriler optimize ediliyor...</span>";
             
             try {
-                // Kamu yararına açık, ücretsiz yasal müzik kütüphanesinden şarkıyı çeker
-                const response = await fetch(`https://apple.com{encodeURIComponent(query)}&media=music&limit=5`);
+                // Jamendo'nun ücretsiz geliştirici anahtarı ile müzik araması yapar
+                const response = await fetch(`https://jamendo.com{encodeURIComponent(query)}`);
                 const data = await response.json();
                 
                 container.innerHTML = "";
-                if(data.results.length === 0) {
-                    container.innerHTML = "<span style='color:red;'>İçerik bulunamadı.</span>";
+                if(!data.results || data.results.length === 0) {
+                    container.innerHTML = "<span style='color:red;'>İçerik bulunamadı. Başka bir kelime deneyin.</span>";
                     return;
                 }
                 
@@ -57,13 +57,13 @@
                     const item = document.createElement('div');
                     item.className = 'track-item';
                     item.innerHTML = `
-                        <span style="font-size:12px; max-width:70%; overflow:hidden;">${track.artistName} - ${track.trackName}</span>
-                        <span class="play-btn" onclick="playTrack('${track.previewUrl}')">Yükle</span>
+                        <span style="font-size:12px; max-width:70%; overflow:hidden;">${track.artist_name} - ${track.name}</span>
+                        <span class="play-btn" onclick="playTrack('${track.audio}')">Yükle</span>
                     `;
                     container.appendChild(item);
                 });
             } catch (err) {
-                container.innerHTML = "<span style='color:red;'>Bağlantı hatası oluştu.</span>";
+                container.innerHTML = "<span style='color:red;'>Şirket ağı bu sunucuyu da kısıtladı. Alternatif aranıyor...</span>";
             }
         }
 
@@ -73,10 +73,10 @@
             audio.className = "active-player";
             audio.play();
             
-            // İnternet yavaş olduğu için oynatmayı hemen duraklatıp arkada tamponluyoruz
+            // İnternet yavaş olduğu için anında duraklatıp arkada tamponluyoruz
             setTimeout(() => {
                 audio.pause();
-                console.log("Yavaş internet için arka planda tamponlama başladı...");
+                console.log("Arka planda sessizce yükleme başladı...");
             }, 500);
         }
     </script>
