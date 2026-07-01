@@ -1,11 +1,18 @@
 name: Otomatik Muzik Indirici
 on: [workflow_dispatch]
+
+# GITHUB_TOKEN'a repoya yazma izni veriyoruz
+permissions:
+  contents: write
+
 jobs:
   download:
     runs-on: ubuntu-latest
     steps:
     - name: Repoyu Klonla
       uses: actions/checkout@v3
+      with:
+        persist-credentials: true
 
     - name: Sarkilari Sunucuya Cek
       run: |
