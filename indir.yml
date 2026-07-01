@@ -1,12 +1,18 @@
 name: Otomatik Muzik Indirici
-on: [workflow_dispatch] # Sen butona basinca calisir
+on: [workflow_dispatch]
+
+# GITHUB_TOKEN'a repoya yazma izni veriyoruz, böylece workflow içinden git push yapabilirsiniz
+permissions:
+  contents: write
+
 jobs:
   download:
-    runs-mode: windows-latest # GitHub'in kendi guclu sunucusu
     runs-on: ubuntu-latest
     steps:
     - name: Repoyu Klonla
       uses: actions/checkout@v3
+      with:
+        persist-credentials: true
 
     - name: Sarkilari Sunucuya Cek
       run: |
